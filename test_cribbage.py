@@ -1,5 +1,5 @@
 import pytest
-from cribbage import Card, Hand, CribbageHandAnalyzer, compute_hand_score, parse_cribbage_hand, determine_best_crib
+from cribbage import Card, Hand, CribbageHandAnalyzer, compute_hand_score, parse_cribbage_hand, determine_best_crib, input_and_score_hand
 
 def test_Card_bad_cards():
     with pytest.raises(ValueError) as v:
@@ -302,3 +302,8 @@ def test_parse_cribbage_hand():
     sixhand = Hand.From_Strings(['4S', '5S', '6S', '3S', '9C', 'JS'])
     assert(shand == sixhand)
     assert(sstarter == None)
+
+def test_input_and_score_hand():
+    assert(input_and_score_hand('5H 2C 3C 10S JS QS') == "Keep in hand: [5H, 10S, JS, QS], throw to crib: [2C, 3C]")
+    assert(input_and_score_hand('5H 2C 3C 10S JS') == 'Score: 8')
+    assert(input_and_score_hand('5H 2C 3C 10S') == 'Score: 4')

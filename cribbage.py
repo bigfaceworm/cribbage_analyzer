@@ -1,3 +1,5 @@
+#!/usr/bin/python
+#
 # Final project for CS50 Introduction to Programming with Python
 #
 # See README.md for details
@@ -305,26 +307,30 @@ def parse_cribbage_hand(istring):
         hand = Hand.From_Strings(clist)
     return (hand,starter)
 
-def input_and_score_hand():
+def input_and_score_hand(cmdline):
     # repeatedly ask user for input, validating input, and computing the hand scores
     # exit cleanly if the user enters stop/quit
     stopping_conditions = ("STOP", "QUIT")
     while True:
         try:
-            istring = input("Enter a cribbage hand: ").strip().upper()
-            if istring in stopping_conditions:
-                sys.exit(0)
+            if cmdline == "":
+                istring = input("Enter a cribbage hand: ").strip().upper()
+                if istring in stopping_conditions:
+                    sys.exit(0)
+            else:
+                istring = cmdline
 
+            result = None
             hand,starter = parse_cribbage_hand(istring)
 
             if len(hand.cards) == 4:
                 # just scoring
-                print("Score: {}".format(compute_hand_score(hand,starter)))
+                result = "Score: {}".format(compute_hand_score(hand,starter))
             else:
                 # 6 cards in the hand
                 # need to figure out what cards to put into crib
                 new_hand,crib_throw = determine_best_crib(hand)
-                print("Keep in hand: {}, throw to crib: {}".format(new_hand, crib_throw))
+                result = "Keep in hand: {}, throw to crib: {}".format(new_hand, crib_throw)
 
         except (ValueError) as err:
             # parsing errors will be these
@@ -340,7 +346,12 @@ def input_and_score_hand():
             print(err.args)
             sys.exit(0)
 
-            # print "I/O error({0}): {1}".format(e.errno, e.strerror)
+        if cmdline != "":
+            return result
+        else:
+            if result: print(result)
+
+        # print "I/O error({0}): {1}".format(e.errno, e.strerror)
         #except:
         #    print("Unexpected error:", sys.exc_info()[0])
         #    sys.exit(1)
@@ -399,7 +410,7 @@ def determine_best_crib(hand, own_crib=True):
 
 
 def main():
-    input_and_score_hand()
+    print(input_and_score_hand(" ".join(sys.argv[1:])))
 
 if __name__ == "__main__":
     main()
